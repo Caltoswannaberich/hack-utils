@@ -1,7 +1,7 @@
 {
   "name": "hack",
-  "main": "./lib/hack-utils",
-  "version": "0.0.2",
+  "main": "./lib/hack-utils.js",
+  "version": "0.1.2",
   "description": "A short description of your package",
   "repository": "https://github.com/romgrk/hack-utils",
   "license": "MIT",
