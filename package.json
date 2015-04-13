@@ -1,0 +1,16 @@
+{
+  "name": "hack-utils",
+  "main": "./lib/hack-utils",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "activationCommands": {
+    "atom-workspace": "hack-utils:toggle"
+  },
+  "repository": "https://github.com/atom/hack-utils",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
