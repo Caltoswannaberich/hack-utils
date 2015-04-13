@@ -2,6 +2,7 @@ HackUtilsView = require './hack-utils-view'
 {CompositeDisposable} = require 'atom'
 
 console.log  module.paths
+module.require '/home/romgrk/github/hack-utils/lib/hack-utils.coffee'
 module.exports = HackUtils =
     Config:
         set: 'ok'
