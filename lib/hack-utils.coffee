@@ -1,33 +1,36 @@
 HackUtilsView = require './hack-utils-view'
 {CompositeDisposable} = require 'atom'
 
+console.log  module.paths
 module.exports = HackUtils =
-  hackUtilsView: null
-  modalPanel: null
-  subscriptions: null
+    Config:
+        set: 'ok'
 
-  activate: (state) ->
-    @hackUtilsView = new HackUtilsView(state.hackUtilsViewState)
-    @modalPanel = atom.workspace.addModalPanel(item: @hackUtilsView.getElement(), visible: false)
+    hackUtilsView: null
+    modalPanel: null
+    subscriptions: null
 
-    # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
-    @subscriptions = new CompositeDisposable
+    activate: (state) ->
+        @hackUtilsView = new HackUtilsView(state.hackUtilsViewState)
+        # @modalPanel = atom.workspace.addModalPanel(item: @hackUtilsView.getElement(), visible: false)
 
-    # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'hack-utils:toggle': => @toggle()
+        # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
+        @subscriptions = new CompositeDisposable
 
-  deactivate: ->
-    @modalPanel.destroy()
-    @subscriptions.dispose()
-    @hackUtilsView.destroy()
+        # Register command that toggles this view
+        @subscriptions.add atom.commands.add 'atom-workspace', 'hack-utils:toggle': => @toggle()
 
-  serialize: ->
-    hackUtilsViewState: @hackUtilsView.serialize()
+    deactivate: ->
+        @modalPanel.destroy()
+        @subscriptions.dispose()
+        @hackUtilsView.destroy()
 
-  toggle: ->
-    console.log 'HackUtils was toggled!'
+    serialize: ->
+        hackUtilsViewState: @hackUtilsView.serialize()
 
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
-    else
-      @modalPanel.show()
+    toggle: ->
+        console.log 'HackUtils was toggled!'
+        if @modalPanel.isVisible()
+            @modalPanel.hide()
+        else
+            @modalPanel.show()
