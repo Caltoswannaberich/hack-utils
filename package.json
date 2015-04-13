@@ -1,5 +1,5 @@
 {
-  "name": "hack",
+  "name": "hack-utils",
   "main": "./lib/hack-utils.js",
   "version": "0.1.2",
   "description": "A short description of your package",
