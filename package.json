@@ -1,6 +1,6 @@
 {
   "name": "hack",
-  "main": "./lib/hack-utils.js",
+  "main": "./lib/hack-utils",
   "version": "0.1.4",
   "description": "A short description of your package",
   "repository": "https://github.com/romgrk/hack-utils",
@@ -9,7 +9,8 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "atom-space-pen-views": "^2.0.3",
+    "atom-space-pen-views": "^2.0.5",
+    "chokidar": "^1.0.1",
     "cson": "^3.0.1",
     "event-kit": "^1.1.0",
     "underscore-plus": "^1.6.6"
