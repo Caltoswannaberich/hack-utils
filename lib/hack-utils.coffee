@@ -20,34 +20,34 @@ module.exports = HackUtils =
     # modalPanel: null
     subscriptions: null
 
-    Config:
-        set: 'ok'
-
     Eval:
         files: []
 
         watch: (filename) ->
+            return if _.some @files, (e) -> e.file == filename
             filename = Fs.realpathSync filename
-            LOG 'Hack: watching ' + filename
             watcher = Watch filename
             watcher.on 'change', @reload
             @files.push
                 file: filename,
                 watcher: watcher
 
+        # Called by chokidar.watch on file change
+        #
+        # * `filename` path to file
+        # * `stats` fs.stats on filename
+        #
+        # Returns the required filename
         reload: (filename, stats) ->
             # filename = Path.resolve filename
+            delete window.require(filename)
             delete require.cache[filename]
             window.require(filename)
 
-        removeFromCache: ->
-            delete require.cache[filename]
+        unrequire: ->
+            delete window.require.cache[filename]
 
-        requireNoCache: (context, filename) ->
-            require.cache.remove(filename)
-            require(filename)
-
-        coffee: (fn) ->
+        coffee: (fn, run) ->
             console.log 'Loading ' + fn
             cmd = "coffee"
             args = [ "-p", fn ]
@@ -55,31 +55,35 @@ module.exports = HackUtils =
             # console.log ret
             try
                 code = ret.stdout.toString()
-                result = eval.call(window, code)
+                result = eval.call(window, code) if run?
                 console.log fn + ' reloaded'
-                return result
+                return code
             catch e
                 console.error e
                 return false
 
-
-    require: (name) ->
-        funcs = [
-            (n) -> window.require n
-            (n) -> window.require atom.packages.getActivePackage(n).mainModulePath
-            (n) -> window.require Path.resolve(process.env.ATOM_HOME, n)
-        ]
-        for f in funcs
+    # Load files and watch/autoreload them
+    #
+    # * `files` list of files to watch in absolute path
+    initLib: (files) ->
+        for f in files
             try
-                return window.require name
+                window.require f
+                Eval.watch f
             catch e
-                continue
-        throw new Error('module not found')
+                console.error e
 
-    reload: (filename) ->
-        delete window.module.children[filename]
-        delete window.require.cache[filename]
-        window.require filename
+    # Reload the file
+    #
+    # * `filename` path to file
+    #
+    # Returns the required filename
+    reload: (args...) ->
+        filename = Path.resolve args...
+        console.log "Reloading ", filename
+        delete window.require(filename)
+        delete require.cache[filename]
+        window.require(filename)
 
     reloadPackage: (name) ->
         pk       = atom.packages
@@ -113,15 +117,8 @@ module.exports = HackUtils =
 
     deactivate: ->
         # @modalPanel.destroy()
-        # @subscriptions.dispose()
+        @subscriptions.dispose()
         # @hackUtilsView.destroy()
 
     serialize: ->
         # hackUtilsViewState: @hackUtilsView.serialize()
-
-    toggle: ->
-        console.log 'HackUtils was toggled!'
-        # if @modalPanel.isVisible()
-        #     @modalPanel.hide()
-        # else
-        #     @modalPanel.show()
